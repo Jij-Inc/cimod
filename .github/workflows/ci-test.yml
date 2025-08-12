@@ -34,7 +34,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     if: ${{ github.actor != 'dependabot[bot]' || !contains(github.head_ref, 'dependabot')}}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Install uv and set Python version
       uses: astral-sh/setup-uv@v6
       with:
@@ -158,7 +158,7 @@ jobs:
     #if: ${{github.event_name == 'workflow_dispatch'}}
     if: ${{ !contains(github.head_ref, 'dependabot/github_actions')}}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Install uv and set Python version
       uses: astral-sh/setup-uv@v6
       with:
