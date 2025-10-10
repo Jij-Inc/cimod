@@ -9,9 +9,9 @@ jobs:
   build_sdist:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install uv and set Python version
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.11"
       - name: Install dependencies
@@ -52,7 +52,7 @@ jobs:
             container: ghcr.io/openjij/openjij-builder-minimum-manylinux_2_28_x86_64:latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Get Python Version
         shell: bash
         run: |
@@ -137,7 +137,7 @@ jobs:
             arch: aarch64
             CIBW_BUILD: cp313-manylinux_aarch64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up QEME
         uses: docker/setup-qemu-action@v3
         with:
@@ -148,7 +148,7 @@ jobs:
         with:
           install: true
       - name: Build wheels on ${{matrix.arch}}
-        uses: pypa/cibuildwheel@v3.0.1
+        uses: pypa/cibuildwheel@v3.2.0
         env:
           CIBW_BUILD: ${{matrix.CIBW_BUILD}}
           CIBW_ENVIRONMENT: ""
@@ -190,14 +190,14 @@ jobs:
             CIBW_PLATFORM: macos
             CIBW_ENVIRONMENT: "MACOSX_DEPLOYMENT_TARGET='10.14'"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install Dependency
         shell: bash
         run: |
           set -eux 
           brew install eigen nlohmann-json
       - name: Build wheels on ${{ matrix.CIBW_PLATFORM }} ${{matrix.arch}}
-        uses: pypa/cibuildwheel@v3.0.1
+        uses: pypa/cibuildwheel@v3.2.0
         env:
           CIBW_ENVIRONMENT: ${{ matrix.CIBW_ENVIRONMENT }}
           CIBW_PLATFORM: ${{ matrix.CIBW_PLATFORM }}
@@ -222,7 +222,7 @@ jobs:
             CIBW_PLATFORM: windows
             CIBW_ENVIRONMENT: "CMAKE_TOOLCHAIN_FILE='C:/vcpkg/scripts/buildsystems/vcpkg.cmake'"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Add msbuild to PATH
         if: ${{ matrix.os == 'windows-latest'}}
         uses: microsoft/setup-msbuild@v2.0.0
@@ -254,7 +254,7 @@ jobs:
           vcpkg --triplet x64-windows install nlohmann-json
           vcpkg integrate install
       - name: Build wheels on ${{ matrix.CIBW_PLATFORM }} ${{matrix.arch}}
-        uses: pypa/cibuildwheel@v3.0.1
+        uses: pypa/cibuildwheel@v3.2.0
         env:
           CIBW_ENVIRONMENT: ${{ matrix.CIBW_ENVIRONMENT }}
           CIBW_PLATFORM: ${{ matrix.CIBW_PLATFORM }}
@@ -282,7 +282,7 @@ jobs:
       id-token: write
     if: ${{github.event_name == 'release'}}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: ./dist
           pattern: wheel-*
