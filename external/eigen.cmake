@@ -31,6 +31,9 @@ set(EIGEN_TEST_NOQT OFF CACHE BOOL "" FORCE)
 set(EIGEN_LEAVE_TEST_IN_ALL_TARGET OFF CACHE BOOL "" FORCE)
 #set(EIGEN_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
+# Disable installation of Eigen3 headers to prevent them from being included in the wheel
+set(EIGEN_INSTALL_HEADERS OFF CACHE BOOL "" FORCE)
+
 if(MSVC)
   set(EIGEN_Fortran_COMPILER_WORKS OFF CACHE BOOL "" FORCE)
 endif()
@@ -51,7 +54,12 @@ FetchContent_Declare(
     GIT_SHALLOW     TRUE
     )
 
-FetchContent_MakeAvailable(eigen)
+# Prevent Eigen from being installed by using FetchContent_Populate + add_subdirectory with EXCLUDE_FROM_ALL
+FetchContent_GetProperties(eigen)
+if(NOT eigen_POPULATED)
+    FetchContent_Populate(eigen)
+    add_subdirectory(${eigen_SOURCE_DIR} ${eigen_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
 add_library(cimod-eigen_lib INTERFACE)
 target_include_directories(cimod-eigen_lib INTERFACE ${eigen_SOURCE_DIR})
