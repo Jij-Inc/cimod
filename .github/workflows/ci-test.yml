@@ -14,16 +14,16 @@
 
 name: Test
 
-on: 
+on:
   workflow_dispatch:
   push:
-    branches: 
-     - main
-  pull_request: 
-    types: 
-     - opened
-     - reopened
-     - synchronize
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
 
 jobs:
   CPP:
@@ -34,212 +34,206 @@ jobs:
     runs-on: ${{ matrix.os }}
     if: ${{ github.actor != 'dependabot[bot]' || !contains(github.head_ref, 'dependabot')}}
     steps:
-    - uses: actions/checkout@v4
-    - name: Install uv and set Python version
-      uses: astral-sh/setup-uv@v6
-      with:
-        python-version: '3.12'
-    - name: Install Dep on linux
-      if: ${{ matrix.os == 'ubuntu-latest'}}
-      shell: bash
-      run: |
-        uv tool install ninja
-        sudo apt-get install -y libeigen3-dev 
-        sudo apt-get install -y libopenblas-dev lcov
-    - name: Install Dep on macos
-      if: ${{ matrix.os == 'macos-latest'}}
-      shell: bash
-      run: |
-        uv tool install ninja
-        brew install eigen nlohmann-json lcov libomp
-    - name: Add msbuild to PATH
-      if: ${{ matrix.os == 'windows-latest'}}
-      uses: microsoft/setup-msbuild@v2.0.0
-    - name: Prepare Cache 
-      if: ${{ matrix.os == 'windows-latest'}}
-      shell: bash 
-      run: |
-        set -eux
-        ls  C:/vcpkg
-        MSBuild.exe -version > msbuild_version.txt
-        cat msbuild_version.txt
-    - name: Install Dep on windows
-      if: ${{ matrix.os == 'windows-latest'}}
-      shell: powershell
-      run: |
-         vcpkg help triplet
-         vcpkg search eigen3
-         vcpkg search openblas
-         vcpkg search blas
-         vcpkg search clpack
-         vcpkg search lapack-reference
-         vcpkg --triplet x64-windows-static install eigen3
-         vcpkg --triplet x64-windows install eigen3
-         vcpkg --triplet x64-windows-static install nlohmann-json
-         vcpkg --triplet x64-windows install nlohmann-json
-         vcpkg integrate install
-    - name: Install CMake 
-      run: |
-        uv tool install cmake
-        cmake --version
-    - name: Prepare 
-      shell: bash
-      run: mkdir build
-    - name: CMake Configure
-      if: ${{ matrix.os == 'ubuntu-latest'}}
-      shell: bash
-      run: >
-        cmake 
-        -DCMAKE_BUILD_TYPE=Debug 
-        -DENABLE_COVERAGE=On
-        -S .
-        -B build
-    - name: CMake Configure
-      if: ${{ matrix.os == 'macos-latest'}}
-      shell: bash
-      run: >
-        cmake 
-        -DCMAKE_BUILD_TYPE=Debug 
-        -S .
-        -B build
-    - name: CMake Configure
-      if: ${{ matrix.os == 'windows-latest'}}
-      shell: powershell
-      run: >
-        cmake 
-        -DCMAKE_BUILD_TYPE=Debug 
-        -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
-        -S .
-        -B build
-    - name: CMake Build
-      shell: bash
-      run: >
-        cmake  
-        --build build
-        --parallel
-    - name: CMake Test
-      shell: bash
-      working-directory: build
-      run: >
-        ctest
-        --extra-verbose
-        --parallel
-        --schedule-random
-    - name: Run gcov
-      if: ${{ matrix.os == 'ubuntu-latest'}}
-      shell: bash
-      working-directory: build
-      run: >
-        gcov 
-        tests/CMakeFiles/cimod_test.dir/test.cpp.gcda 
-        -o tests/CMakeFiles/cimod_test.dir 
-        -p 
-        -l 
-        -b
-    - uses: codecov/codecov-action@v5
-      if: ${{ matrix.os == 'ubuntu-latest'}}
-      continue-on-error: true
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }} 
+      - uses: actions/checkout@v4
+      - name: Install uv and set Python version
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Install Dep on linux
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+        shell: bash
+        run: |
+          uv tool install ninja
+          sudo apt-get install -y libeigen3-dev 
+          sudo apt-get install -y libopenblas-dev lcov
+      - name: Install Dep on macos
+        if: ${{ matrix.os == 'macos-latest'}}
+        shell: bash
+        run: |
+          uv tool install ninja
+          brew install eigen nlohmann-json lcov libomp
+      - name: Add msbuild to PATH
+        if: ${{ matrix.os == 'windows-latest'}}
+        uses: microsoft/setup-msbuild@v2.0.0
+      - name: Prepare Cache
+        if: ${{ matrix.os == 'windows-latest'}}
+        shell: bash
+        run: |
+          set -eux
+          ls  C:/vcpkg
+          MSBuild.exe -version > msbuild_version.txt
+          cat msbuild_version.txt
+      - name: Install Dep on windows
+        if: ${{ matrix.os == 'windows-latest'}}
+        shell: powershell
+        run: |
+          vcpkg --triplet x64-windows-static install eigen3
+          vcpkg --triplet x64-windows install eigen3
+          vcpkg --triplet x64-windows-static install nlohmann-json
+          vcpkg --triplet x64-windows install nlohmann-json
+          vcpkg integrate install
+      - name: Install CMake
+        run: |
+          uv tool install cmake
+          cmake --version
+      - name: Prepare
+        shell: bash
+        run: mkdir build
+      - name: CMake Configure
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+        shell: bash
+        run: >
+          cmake 
+          -DCMAKE_BUILD_TYPE=Debug 
+          -DENABLE_COVERAGE=On
+          -S .
+          -B build
+      - name: CMake Configure
+        if: ${{ matrix.os == 'macos-latest'}}
+        shell: bash
+        run: >
+          cmake 
+          -DCMAKE_BUILD_TYPE=Debug 
+          -S .
+          -B build
+      - name: CMake Configure
+        if: ${{ matrix.os == 'windows-latest'}}
+        shell: powershell
+        run: >
+          cmake 
+          -DCMAKE_BUILD_TYPE=Debug 
+          -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -S .
+          -B build
+      - name: CMake Build
+        shell: bash
+        run: >
+          cmake  
+          --build build
+          --parallel
+      - name: CMake Test
+        shell: bash
         working-directory: build
-        name: cxxcimod
-        flags: cxxcimod
-        fail_ci_if_error: false
-        verbose: true
+        run: >
+          ctest
+          --extra-verbose
+          --parallel
+          --schedule-random
+      - name: Run gcov
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+        shell: bash
+        working-directory: build
+        run: >
+          gcov 
+          tests/CMakeFiles/cimod_test.dir/test.cpp.gcda 
+          -o tests/CMakeFiles/cimod_test.dir 
+          -p 
+          -l 
+          -b
+      - uses: codecov/codecov-action@v5
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+        continue-on-error: true
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          working-directory: build
+          name: cxxcimod
+          flags: cxxcimod
+          fail_ci_if_error: false
+          verbose: true
   Python:
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
     runs-on: ${{ matrix.os }}
     #if: ${{github.event_name == 'workflow_dispatch'}}
     if: ${{ !contains(github.head_ref, 'dependabot/github_actions')}}
     steps:
-    - uses: actions/checkout@v4
-    - name: Install uv and set Python version
-      uses: astral-sh/setup-uv@v6
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Get Python Version
-      shell: bash
-      run: |
+      - uses: actions/checkout@v4
+      - name: Install uv and set Python version
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Get Python Version
+        shell: bash
+        run: |
           set -eux
           python --version > python_version.txt
           cat python_version.txt
-    - name: Install Dependencies
-      shell: bash
-      run: |
+      - name: Install Eigen3 on linux
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+        run: |
+          sudo apt-get install -y libeigen3-dev
+          sudo apt-get install -y libopenblas-dev
+      - name: Install Eigen3 on macos
+        if: ${{ matrix.os == 'macos-latest'}}
+        run: |
+          brew install eigen nlohmann-json libomp
+      - name: Add msbuild to PATH
+        if: ${{ matrix.os == 'windows-latest'}}
+        uses: microsoft/setup-msbuild@v2.0.0
+      - name: Prepare Cache
+        if: ${{ matrix.os == 'windows-latest'}}
+        shell: bash
+        run: |
           set -eux
-          uv sync --locked --group test  
-    - name: Install Eigen3 on linux
-      if: ${{ matrix.os == 'ubuntu-latest'}}
-      run: |
-        sudo apt-get install -y libeigen3-dev
-        sudo apt-get install -y libopenblas-dev 
-    - name: Install Eigen3 on macos
-      if: ${{ matrix.os == 'macos-latest'}}
-      run: |
-        brew install eigen nlohmann-json libomp
-    - name: Add msbuild to PATH
-      if: ${{ matrix.os == 'windows-latest'}}
-      uses: microsoft/setup-msbuild@v2.0.0
-    - name: Prepare Cache 
-      if: ${{ matrix.os == 'windows-latest'}}
-      shell: bash 
-      run: |
-        set -eux
-        ls  C:/vcpkg
-        MSBuild.exe -version > msbuild_version.txt
-        cat msbuild_version.txt
-    - name: Install Eigen on windows
-      if: ${{ matrix.os == 'windows-latest'}}
-      shell: bash 
-      run: |
-        vcpkg --triplet x64-windows-static install eigen3
-        vcpkg --triplet x64-windows install eigen3
-        vcpkg --triplet x64-windows-static install nlohmann-json
-        vcpkg --triplet x64-windows install nlohmann-json
-        vcpkg integrate install
-    - name: Build & Install    
-      if: ${{ matrix.os == 'ubuntu-latest'}}
-      shell: bash
-      run: |
-        set -eux
-        export CMAKE_BUILD_TYPE=Debug
-        uv pip install -vvv .
-    - name: Build & Install    
-      if: ${{ matrix.os == 'macos-latest'}}
-      shell: bash
-      run: |
-        set -eux
-        export CMAKE_BUILD_TYPE=Debug
-        uv pip install -vvv .
-    - name: Build & Install    
-      if: ${{ matrix.os == 'windows-latest'}}
-      shell: bash 
-      run: |
-        set -eux
-        export CMAKE_BUILD_TYPE=Debug
-        export CMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        uv pip install -vvv .
-    - name: Test 
-      shell: bash
-      run: |
-        set -eux
-        uv run pytest tests/ -v --cov=cimod 
-    - name: Generate
-      shell: bash
-      run: |
+          ls  C:/vcpkg
+          MSBuild.exe -version > msbuild_version.txt
+          cat msbuild_version.txt
+      - name: Install Eigen on windows
+        if: ${{ matrix.os == 'windows-latest'}}
+        shell: powershell
+        run: |
+          vcpkg --triplet x64-windows-static install eigen3
+          vcpkg --triplet x64-windows install eigen3
+          vcpkg --triplet x64-windows-static install nlohmann-json
+          vcpkg --triplet x64-windows install nlohmann-json
+          vcpkg integrate install
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          set -eux
+          uv sync --locked --group test
+      - name: Build & Install
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+        shell: bash
+        run: |
+          set -eux
+          export CMAKE_BUILD_TYPE=Debug
+          uv pip install -vvv .
+      - name: Build & Install
+        if: ${{ matrix.os == 'macos-latest'}}
+        shell: bash
+        run: |
+          set -eux
+          export CMAKE_BUILD_TYPE=Debug
+          uv pip install -vvv .
+      - name: Build & Install
+        if: ${{ matrix.os == 'windows-latest'}}
+        shell: bash
+        run: |
+          set -eux
+          export CMAKE_BUILD_TYPE=Debug
+          export CMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          uv pip install -vvv .
+      - name: Test
+        shell: bash
+        run: |
+          set -eux
+          uv run pytest tests/ -v --cov=cimod
+      - name: Generate
+        shell: bash
+        run: |
           set -eux
           uv run python -m coverage xml
           uv run python -m coverage json
           uv run python -m coverage lcov
-    - uses: codecov/codecov-action@v5
-      continue-on-error: true
-      with:
+      - uses: codecov/codecov-action@v5
+        continue-on-error: true
+        with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           name: "Cimod"
