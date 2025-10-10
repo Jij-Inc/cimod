@@ -22,22 +22,17 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{env.Python_Version}}
-      - name: Python Cache Key
-        shell: bash
-        run: |
-          echo $(which python) > /tmp/python_version.txt
-
-      - name: Install Dep
-        run: |
-          uv pip install typing-extensions
-          sudo apt-get install -y libeigen3-dev lcov graphviz mscgen dia pdf2svg astyle
-          sudo apt-get install -y doxygen doxygen-doxyparse fonts-liberation python3-breathe
-
       - name: Install Dependencies
         shell: bash
         run: |
           set -eux
           uv sync --locked --group docs
+      - name: Install Dep
+        run: |
+          uv pip install typing-extensions
+          sudo apt-get update
+          sudo apt-get install -y libeigen3-dev lcov graphviz mscgen dia pdf2svg astyle
+          sudo apt-get install -y doxygen doxygen-doxyparse fonts-liberation python3-breathe
       - name: Prepare
         shell: bash
         run: mkdir build
