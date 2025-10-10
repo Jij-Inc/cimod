@@ -1,5 +1,8 @@
 name: Build&Upload
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   release:
