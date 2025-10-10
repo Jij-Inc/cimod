@@ -6,11 +6,11 @@ on:
     types: [published]
 
 env:
-  Python_Version: '3.10'
+  Python_Version: "3.10"
 
 jobs:
   build_docs:
-    name: Build Documentation 
+    name: Build Documentation
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,21 +22,17 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{env.Python_Version}}
-      - name: Python Cache Key
-        shell: bash
-        run: |
-          echo $(which python) > /tmp/python_version.txt
       - name: Install Dependencies
         shell: bash
         run: |
           set -eux
           uv sync --locked --group docs
       - name: Install Dep
-        run: | 
-         uv pip install typing-extensions
-         sudo apt-get install -y libeigen3-dev lcov graphviz mscgen dia pdf2svg astyle
-         sudo apt-get install -y doxygen doxygen-doxyparse fonts-liberation python3-breathe
-      - name: Prepare 
+        run: |
+          uv pip install typing-extensions
+          sudo apt-get install -y libeigen3-dev lcov graphviz mscgen dia pdf2svg astyle
+          sudo apt-get install -y doxygen doxygen-doxyparse fonts-liberation python3-breathe
+      - name: Prepare
         shell: bash
         run: mkdir build
       - name: CMake Configure
@@ -60,7 +56,7 @@ jobs:
         run: |
           set -eux
           cp -r ./build/html/* ./public/
-      - name: du -a 
+      - name: du -a
         shell: bash
         if: always()
         run: |
@@ -76,16 +72,16 @@ jobs:
         #if: ${{github.event_name == 'release'}}
         uses: peaceiris/actions-gh-pages@v4
         with:
-         personal_token: ${{ secrets.CIMOD_DOC }}
-         keep_files: true
-         allow_empty_commit: true
-         publish_dir: ./public
-         publish_branch: main
-         external_repository: OpenJij/Cimod-Documentation
-         destination_dir: www
-         user_name: 'github-actions[bot]'
-         user_email: 'github-actions[bot]@users.noreply.github.com'
-         commit_message: ${{ github.event.head_commit.message }}
-         full_commit_message: ${{ github.event.head_commit.message }}
-         tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
-         tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
+          personal_token: ${{ secrets.CIMOD_DOC }}
+          keep_files: true
+          allow_empty_commit: true
+          publish_dir: ./public
+          publish_branch: main
+          external_repository: OpenJij/Cimod-Documentation
+          destination_dir: www
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: ${{ github.event.head_commit.message }}
+          full_commit_message: ${{ github.event.head_commit.message }}
+          tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
+          tag_message: "Deployment ${{ steps.prepare_tag.outputs.tag_name }}"
