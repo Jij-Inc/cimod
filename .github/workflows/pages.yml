@@ -16,7 +16,6 @@
 name: Deploy static content to Pages
 
 on:
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -24,7 +23,7 @@ on:
     types: [published]
 
 env:
-  Python_Version: '3.10'
+  Python_Version: "3.10"
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -46,9 +45,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install uv and set Python version
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{env.Python_Version}}
       - name: Python Cache Key
@@ -61,11 +60,11 @@ jobs:
           set -eux
           uv sync --locked --group docs
       - name: Install System Dependencies
-        run: | 
-         uv pip install typing-extensions
-         sudo apt-get install -y libeigen3-dev lcov graphviz mscgen dia pdf2svg astyle
-         sudo apt-get install -y doxygen doxygen-doxyparse fonts-liberation python3-breathe
-      - name: Prepare 
+        run: |
+          uv pip install typing-extensions
+          sudo apt-get install -y libeigen3-dev lcov graphviz mscgen dia pdf2svg astyle
+          sudo apt-get install -y doxygen doxygen-doxyparse fonts-liberation python3-breathe
+      - name: Prepare
         shell: bash
         run: mkdir build
       - name: CMake Configure
@@ -96,7 +95,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           # Upload entire repository
-          path: 'docs/_build/html'
+          path: "docs/_build/html"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

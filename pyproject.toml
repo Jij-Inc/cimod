@@ -164,18 +164,6 @@ select = [
     "F",               # Pyflakes
     "I",               # isort
     "UP",              # pyupgrade
-    
-    # Phase 2: 品質向上（将来実装予定）
-    # "B",               # flake8-bugbear
-    # "SIM",             # simplify
-    
-    # Phase 3: 包括的品質（将来実装予定）
-    # "N",               # pep8-naming
-    # "RUF",             # ruff固有ルール
-    
-    # Advanced（長期的検討）
-    # "ANN",             # 型アノテーション
-    # "C90",             # 複雑度チェック
 ]
 ignore = [
     "E501",    # 行長制限無視（既存設定：max-line-length = 999）
@@ -202,7 +190,9 @@ line-ending = "auto"
 max-complexity = 10
 
 [tool.cibuildwheel]
-skip = ["cp36*", "cp37*", "cp38*", "*musllinux_x86_64", "*musllinux_aarch64", "pp*"]
+# musllinuxはサポート対象外（manylinuxのみ対応）
+# cp38以下はrequires-python = ">=3.9"により不要
+skip = ["*musllinux*"]
 build-verbosity = 1
 dependency-versions = "latest"
 
@@ -216,12 +206,12 @@ repair-wheel-command = "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
 archs = ["x86_64", "arm64"]
 build-frontend = "build"
 before-build = [ 
-    "pip install --upgrade pip wheel build pybind11 cmake ninja", 
+    "pip install --upgrade wheel build pybind11 cmake ninja", 
 ]
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64"]
 before-build = [ 
-    "pip install --upgrade pip wheel build cmake pybind11 delvewheel", 
+    "pip install --upgrade wheel build cmake pybind11 delvewheel", 
 ]
 repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"
