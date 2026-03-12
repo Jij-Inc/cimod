@@ -141,7 +141,7 @@ ENDIF ()
 
 FIND_PACKAGE (Eigen3 CONFIG)
 
-IF (TARGET Eigen3::Eigen)
+IF (TARGET Eigen3::Eigen OR EIGEN3_FOUND)
     MESSAGE (STATUS "Skip Download eigen3")
 ELSE ()
     MESSAGE (STATUS "Download eigen3")
