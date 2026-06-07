@@ -140,7 +140,7 @@ The project uses [PEP 735](https://peps.python.org/pep-0735/) dependency groups 
 Dependencies are locked in `uv.lock` for reproducible builds across environments.
 
 ### System Requirements
-- **Python**: 3.9-3.13
+- **Python**: 3.9-3.14
 - **C++**: C++17 compatible compiler  
 - **CMake**: 3.20+ (for C++ development)
 

@@ -17,7 +17,7 @@ requires = [
     "scikit-build-core>=0.10",
     "setuptools_scm[toml]",
     "pybind11",
-    "oldest-supported-numpy",
+    "numpy>=2.0.0",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -37,7 +37,7 @@ sdist.include = ["cimod/_version.py"]
 name = "jij-cimod"
 dynamic = ["version"]
 description = "C++ library for a binary (and polynomial) quadratic model."
-requires-python = ">=3.9, <3.14"
+requires-python = ">=3.9, <3.15"
 license = {text = "Apache License 2.0"}
 authors = [
     {name = "Jij Inc.", email = "info@openjij.org"}
@@ -55,6 +55,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: C++",
@@ -68,8 +69,8 @@ classifiers = [
 ]
 
 dependencies = [
-    "numpy>=1.19.3,<2.4",
-    "scipy>=1.5.4,<1.16",
+    "numpy>=1.19.3,<2.5",
+    "scipy>=1.5.4,<1.17",
     "dimod>=0.9.11,<0.13",
 ]
 
