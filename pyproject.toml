@@ -41,7 +41,7 @@ sdist.include = ["cimod/_version.py"]
 name = "jij-cimod"
 dynamic = ["version"]
 description = "C++ library for a binary (and polynomial) quadratic model."
-requires-python = ">=3.9, <3.15"
+requires-python = ">=3.10, <3.15"
 license = {text = "Apache License 2.0"}
 authors = [
     {name = "Jij Inc.", email = "info@openjij.org"}
@@ -54,7 +54,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

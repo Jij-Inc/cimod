@@ -38,9 +38,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - artifact: wheel-linux_x86_64_python39
-            python: /opt/python/cp39-cp39/bin/python
-            container: ghcr.io/openjij/openjij-builder-minimum-manylinux_2_28_x86_64:latest
           - artifact: wheel-linux_x86_64_python310
             python: /opt/python/cp310-cp310/bin/python
             container: ghcr.io/openjij/openjij-builder-minimum-manylinux_2_28_x86_64:latest
@@ -122,10 +119,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - artifact: wheel-linux_aarch64_python39
-            os: ubuntu-latest
-            arch: aarch64
-            CIBW_BUILD: cp39-manylinux_aarch64
           - artifact: wheel-linux_aarch64_python310
             os: ubuntu-latest
             arch: aarch64
