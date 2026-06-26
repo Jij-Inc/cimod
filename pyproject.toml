@@ -16,12 +16,7 @@
 requires = [
     "scikit-build-core>=0.10",
     "setuptools_scm[toml]",
-    "pybind11",
-    # NOTE: ``oldest-supported-numpy`` is deprecated and has no entry for
-    # Python 3.14, which broke the source build there. The C++ extension is
-    # built with pybind11 + Eigen and does not touch the NumPy C API at compile
-    # time (no ``numpy/arrayobject.h`` / ``import_array`` anywhere), so no
-    # build-time numpy is required.
+    "pybind11>=3.0.0,<4",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -153,7 +148,7 @@ junit_logging = "all"
 
 [tool.ruff]
 line-length = 88
-target-version = "py39"  # 最小サポート版（python_requires = >=3.9）
+target-version = "py310"  # 最小サポート版（python_requires = >=3.10）
 exclude = [
     ".bzr",
     ".direnv",
@@ -177,7 +172,7 @@ select = [
 ]
 ignore = [
     "E501",    # 行長制限無視（既存設定：max-line-length = 999）
-    "UP007",   # typing.Union → X | Y (Python 3.9互換性維持)
+    "UP007",   # typing.Union → X | Y の整理は別変更にする
     "S101",    # assert使用許可（pytest用）
     "T20",     # print文許可（デバッグ用）
 ]
@@ -201,8 +196,9 @@ max-complexity = 10
 
 [tool.cibuildwheel]
 # musllinuxはサポート対象外（manylinuxのみ対応）
-# cp38以下はrequires-python = ">=3.9"により不要
-skip = ["*musllinux*"]
+# cp39以下はrequires-python = ">=3.10"により不要
+# cp31?t は free-threaded wheel を今回サポートしないため除外
+skip = ["*musllinux*", "cp31?t-*"]
 build-verbosity = 1
 dependency-versions = "latest"
 
@@ -216,12 +212,12 @@ repair-wheel-command = "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
 archs = ["x86_64", "arm64"]
 build-frontend = "build"
 before-build = [ 
-    "pip install --upgrade wheel build pybind11 cmake ninja", 
+    "pip install --upgrade wheel build cmake ninja", 
 ]
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64"]
 before-build = [ 
-    "pip install --upgrade wheel build cmake pybind11 delvewheel", 
+    "pip install --upgrade wheel build cmake ninja delvewheel", 
 ]
 repair-wheel-command = "delvewheel repair -w {dest_dir} {wheel}"

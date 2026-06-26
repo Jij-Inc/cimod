@@ -166,8 +166,7 @@ jobs:
             dnf -y --enablerepo=powertools install eigen3-devel
           CIBW_BEFORE_BUILD_LINUX: >
             source scl_source enable gcc-toolset-11 &&
-            pip install pybind11 cmake ninja
-          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9"
+            pip install --upgrade cmake ninja
       - uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.artifact}}
@@ -205,7 +204,6 @@ jobs:
           CIBW_ENVIRONMENT: ${{ matrix.CIBW_ENVIRONMENT }}
           CIBW_PLATFORM: ${{ matrix.CIBW_PLATFORM }}
           CIBW_ARCHS: ${{matrix.arch}}
-          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.artifact}}
@@ -262,7 +260,6 @@ jobs:
           CIBW_ENVIRONMENT: ${{ matrix.CIBW_ENVIRONMENT }}
           CIBW_PLATFORM: ${{ matrix.CIBW_PLATFORM }}
           CIBW_ARCHS: ${{matrix.arch}}
-          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9"
 
       - uses: actions/upload-artifact@v4
         with:
